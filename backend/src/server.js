@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { fetch, ProxyAgent } from 'undici';
 import {
   SECRET_PATTERNS,
   calculateEntropy,
@@ -15,7 +14,10 @@ import {
 const app = express();
 const PORT = process.env.PORT || 4000;
 const GITHUB_API = 'https://api.github.com';
-const proxyAgent = new ProxyAgent('http://192.168.1.128:10810');
+
+// Optional: Use HTTP_PROXY environment variable if set (for development)
+// In production with direct internet access, leave HTTP_PROXY unset
+const HTTP_PROXY = process.env.HTTP_PROXY;
 
 const CODE_EXTENSIONS = new Set([
   '.js',
@@ -147,16 +149,30 @@ function parseGitHubRepoUrl(repoUrl) {
 }
 
 async function githubFetch(path) {
-  const response = await fetch(`${GITHUB_API}${path}`, {
-    headers: {
-      Accept: 'application/vnd.github+json',
-      'User-Agent': 'code-health-checker',
-      ...(process.env.GITHUB_TOKEN
-        ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
-        : {})
-    },
-    dispatcher: proxyAgent
-  });
+  const headers = {
+    Accept: 'application/vnd.github+json',
+    'User-Agent': 'code-health-checker',
+    ...(process.env.GITHUB_TOKEN
+      ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
+      : {})
+  };
+
+  let response;
+  
+  // Use proxy if HTTP_PROXY environment variable is set
+  // This allows the same code to work in both development (with proxy) and production (direct access)
+  if (HTTP_PROXY) {
+    // Use undici's fetch with ProxyAgent when proxy is configured
+    const { fetch: undiciFetch, ProxyAgent } = await import('undici');
+    const proxyAgent = new ProxyAgent(HTTP_PROXY);
+    response = await undiciFetch(`${GITHUB_API}${path}`, {
+      headers,
+      dispatcher: proxyAgent
+    });
+  } else {
+    // Use native Node.js fetch when no proxy is needed (production)
+    response = await fetch(`${GITHUB_API}${path}`, { headers });
+  }
 
   if (!response.ok) {
     const details = await response.json().catch(() => ({}));

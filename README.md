@@ -44,7 +44,13 @@ Optional: create `backend/.env` and set `GITHUB_TOKEN` to increase GitHub API ra
 ```bash
 GITHUB_TOKEN=github_pat_your_token_here
 PORT=4000
+
+# Optional: Only needed in development environments without direct internet access
+# Leave unset in production with direct internet access
+# HTTP_PROXY=http://proxy-host:port
 ```
+
+**Note:** The server uses native Node.js fetch by default (no proxy). If your development environment requires a proxy to access GitHub API, set the `HTTP_PROXY` environment variable. See `backend/PROXY_CONFIGURATION.md` for details.
 
 ## Frontend
 
