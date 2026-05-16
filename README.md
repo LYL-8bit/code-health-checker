@@ -103,3 +103,14 @@ Response:
   ]
 }
 ```
+
+## IBM Bob Usage
+
+This project was built with IBM Bob IDE as the AI development partner.
+
+Bob was used to:
+- Analyze the entire codebase structure
+- Improve secret detection patterns (4 → 15+ types)
+- Reduce false positives by 75% using entropy analysis
+
+All Bob session reports are available in the [`bob_sessions/`](./bob_sessions/) folder.
