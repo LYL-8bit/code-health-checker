@@ -1,5 +1,13 @@
 # Code Health Checker
 
+<img width="1494" height="1053" alt="屏幕截图 2026-05-16 235329" src="https://github.com/user-attachments/assets/aea943d6-a2f9-451d-b27b-fa803e3cf50c" />
+
+🌐 **Live Demo:** https://code-health-checker-production-0304.up.railway.app
+
+📦 **Built for IBM Bob Hackathon 2026**
+
+# Code Health Checker
+
 A full-stack app that analyzes a public GitHub repository for common code health issues.
 
 ## Features
