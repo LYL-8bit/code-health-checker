@@ -6,8 +6,6 @@
 
 📦 **Built for IBM Bob Hackathon 2026**
 
-# Code Health Checker
-
 A full-stack app that analyzes a public GitHub repository for common code health issues.
 
 ## Features
